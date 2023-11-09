@@ -5,6 +5,24 @@ using UnityEngine;
 
 public class FirstPlayer : Players
 {
+    [Header("—тартова€ скорость м€ча:")]
+    [SerializeField,Range(5,15)] private float _startingBallSpeed;
+    [Header("—сылка на м€чь:")]
+    [SerializeField] private GameObject _ball;
+
+    
+    private void OnEnable()
+    {
+        _input.Enable();
+        _input.Moving.StartGame.performed += callBackContext => OnGameStart();
+    }
+
+    private void OnDisable()
+    {
+        _input.Disable();
+        _input.Moving.StartGame.performed -= callBackContext => OnGameStart();
+    }
+   
     private void Update() => OnMove();
 
     public override void OnMove()
@@ -17,5 +35,12 @@ public class FirstPlayer : Players
 
             var moveDirection = new Vector3(AxisX, AxisY, 0);
             transform.Translate(moveDirection);     
+    }
+
+    private void OnGameStart()
+    {
+        var obj = _ball.GetComponent<BallController>();
+        transform.GetChild(0).SetParent(null);
+        obj.currentVelocity.z += -_startingBallSpeed;
     }
 }

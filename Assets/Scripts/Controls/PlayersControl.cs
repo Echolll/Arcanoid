@@ -44,6 +44,15 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""StartGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""118ffb65-a875-437c-bac7-0757dccb4e17"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -156,6 +165,17 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
                     ""action"": ""SecondPlayer"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce79c02d-0679-49b1-afae-ee23d6c08630"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -166,6 +186,7 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
         m_Moving = asset.FindActionMap("Moving", throwIfNotFound: true);
         m_Moving_FirstPlayer = m_Moving.FindAction("FirstPlayer", throwIfNotFound: true);
         m_Moving_SecondPlayer = m_Moving.FindAction("SecondPlayer", throwIfNotFound: true);
+        m_Moving_StartGame = m_Moving.FindAction("StartGame", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -229,12 +250,14 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
     private List<IMovingActions> m_MovingActionsCallbackInterfaces = new List<IMovingActions>();
     private readonly InputAction m_Moving_FirstPlayer;
     private readonly InputAction m_Moving_SecondPlayer;
+    private readonly InputAction m_Moving_StartGame;
     public struct MovingActions
     {
         private @PlayersControl m_Wrapper;
         public MovingActions(@PlayersControl wrapper) { m_Wrapper = wrapper; }
         public InputAction @FirstPlayer => m_Wrapper.m_Moving_FirstPlayer;
         public InputAction @SecondPlayer => m_Wrapper.m_Moving_SecondPlayer;
+        public InputAction @StartGame => m_Wrapper.m_Moving_StartGame;
         public InputActionMap Get() { return m_Wrapper.m_Moving; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -250,6 +273,9 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
             @SecondPlayer.started += instance.OnSecondPlayer;
             @SecondPlayer.performed += instance.OnSecondPlayer;
             @SecondPlayer.canceled += instance.OnSecondPlayer;
+            @StartGame.started += instance.OnStartGame;
+            @StartGame.performed += instance.OnStartGame;
+            @StartGame.canceled += instance.OnStartGame;
         }
 
         private void UnregisterCallbacks(IMovingActions instance)
@@ -260,6 +286,9 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
             @SecondPlayer.started -= instance.OnSecondPlayer;
             @SecondPlayer.performed -= instance.OnSecondPlayer;
             @SecondPlayer.canceled -= instance.OnSecondPlayer;
+            @StartGame.started -= instance.OnStartGame;
+            @StartGame.performed -= instance.OnStartGame;
+            @StartGame.canceled -= instance.OnStartGame;
         }
 
         public void RemoveCallbacks(IMovingActions instance)
@@ -281,5 +310,6 @@ public partial class @PlayersControl: IInputActionCollection2, IDisposable
     {
         void OnFirstPlayer(InputAction.CallbackContext context);
         void OnSecondPlayer(InputAction.CallbackContext context);
+        void OnStartGame(InputAction.CallbackContext context);
     }
 }

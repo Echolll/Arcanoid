@@ -1,20 +1,41 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 public class GameManager : MonoBehaviour
-{  
-    [SerializeField] private SelectGame _selectGame;
+{
+    [Header("(WIP)Тип игры:")]
+    [Tooltip("(WIP) Выбор игры:")][SerializeField] private SelectGame _selectGame;
 
-    [SerializeField] List<GameObject> _blockList;
-    [SerializeField] List<Material> _materialList;
-    [SerializeField] Vector3 _fieldSize;
-    [SerializeField] Vector3 _startPostion;
+    [Header("Блоки:")]
+    [Tooltip("Список блоков:")][SerializeField] List<GameObject> _blockList;
+
+    [Header("Материалы")]
+    [Tooltip("Список Материалов:")][SerializeField] List<Material> _materialList;
+
+    [Header("Поля для генерации кубов:")]
+    [Tooltip("Размер поля:")][SerializeField] Vector3 _fieldSize;
+    [Tooltip("Стартовая позиция:")][SerializeField] Vector3 _startPostion;
+    
+    private int _currectPoint;
 
     private void Start()
     {
         GenerateBlock();
+    }
+
+    private void OnEnable()
+    {
+        Players._gameOver += GameEnded;
+        Block._additionalPoint += AddPoint;
+    }
+
+    private void OnDisable()
+    {
+        Players._gameOver += GameEnded;
+        Block._additionalPoint -= AddPoint;
     }
 
     private void ChangeColor()
@@ -22,7 +43,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < _blockList.Count; i++)
         {
             GameObject obj = _blockList[i];
-            int randomNumber = Random.Range(0, _materialList.Count);
+            int randomNumber = UnityEngine.Random.Range(0, _materialList.Count);
             obj.gameObject.GetComponent<MeshRenderer>().material = _materialList[randomNumber];
             obj.name = $"Block {i}";
         }
@@ -50,8 +71,14 @@ public class GameManager : MonoBehaviour
         ChangeColor();
     }
 
-    private void GameEnded()
+    private void AddPoint(int point)
     {
+        _currectPoint += point;
+    }
 
+    private void GameEnded(string message)
+    {       
+        Debug.Log(message);
+        Debug.Log($"{_currectPoint} очков получено!");
     }
 }
