@@ -6,7 +6,7 @@ using UnityEngine;
 public class FirstPlayer : Players
 {
     [Header("—тартова€ скорость м€ча:")]
-    [SerializeField,Range(5,15)] private float _startingBallSpeed;
+    [SerializeField,Range(1,5)] private float _startingBallSpeed;
     [Header("—сылка на м€чь:")]
     [SerializeField] private GameObject _ball;
 
@@ -26,9 +26,7 @@ public class FirstPlayer : Players
     private void Update() => OnMove();
 
     public override void OnMove()
-    {
-            float _speed = 5f;
-
+    {           
             var inputMoveDirection = _input.Moving.FirstPlayer.ReadValue<Vector3>();
             float AxisX = inputMoveDirection.x * _speed * Time.deltaTime;
             float AxisY = inputMoveDirection.y * _speed * Time.deltaTime;

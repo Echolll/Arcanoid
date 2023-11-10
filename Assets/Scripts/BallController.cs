@@ -8,6 +8,9 @@ public class BallController : MonoBehaviour
     private Vector3 stoppingVelocity;
     [Header("—корость м€ча:")]
     public Vector3 currentVelocity;
+    public float  _currectSpeed;
+    [SerializeField] private float _maxSpeed;
+    [SerializeField] private float _additionalSpeed;
     [Header("—тартова€ позици€ м€ча:")]
     [SerializeField] Transform _startPos;
 
@@ -15,35 +18,32 @@ public class BallController : MonoBehaviour
 
     void Update()
     {       
-        transform.Translate(currentVelocity * Time.deltaTime);
+        transform.Translate(currentVelocity * Time.deltaTime * _currectSpeed);
     }
 
     void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Platform") || collision.gameObject.CompareTag("MainCamera"))
-        {          
+    {             
             Vector3 platformNormal = collision.contacts[0].normal;          
             currentVelocity = Vector3.Reflect(currentVelocity, platformNormal);
             
-        }
-
-        if (collision.gameObject.CompareTag("Block"))
-        {
-            Vector3 platformNormal = collision.contacts[0].normal;
-            currentVelocity = Vector3.Reflect(currentVelocity, platformNormal);
-            Destroy(collision.gameObject);
-        }
+            if (collision.gameObject.CompareTag("Block"))
+            {
+                Destroy(collision.gameObject);
+                _currectSpeed += _additionalSpeed;
+                _currectSpeed = Mathf.Clamp(_currectSpeed, 0, _maxSpeed);
+            }    
     }
 
     private void OnTriggerExit(Collider other)
-    {        
-        _hit?.Invoke();
-
-        currentVelocity = stoppingVelocity;
-        transform.SetParent(_startPos, false);
-        transform.position = _startPos.transform.position + new Vector3(0,0,-2);
-        transform.Rotate(0,180,0);
-
+    {
+        if (other.gameObject.CompareTag("Respawn"))
+        {
+            _hit?.Invoke();
+            currentVelocity = stoppingVelocity;
+            transform.SetParent(_startPos, false);
+            transform.position = _startPos.transform.position + new Vector3(0, 0, -2);
+            transform.Rotate(0, 180, 0);
+        }
     }
 
 }

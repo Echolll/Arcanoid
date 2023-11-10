@@ -5,5 +5,5 @@ using UnityEngine;
 public enum SelectGame
 {
    Singlplay,
-   Confrontation
+   Coop
 }

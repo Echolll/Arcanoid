@@ -6,9 +6,11 @@ using UnityEngine;
 
 public abstract class Players : MonoBehaviour
 {
-    private int _maxHealth = 5;   
+    private int _maxHealth = 5;
     private int _damage = 1;
-
+    [Header("Скорость платформы:")]
+    [SerializeField,Range(5,15)] protected float _speed = 5f;
+    
     protected PlayersControl _input;
 
     public static event Action <string> _gameOver;

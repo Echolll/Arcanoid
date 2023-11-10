@@ -9,8 +9,11 @@ public class Block : MonoBehaviour
 
     public static event Action<int> _additionalPoint;
 
+    public static event Action<GameObject> _deleteInList; 
+
     private void OnDestroy()
     {
+        _deleteInList?.Invoke(gameObject);
         _additionalPoint?.Invoke(_point);
     }
 }
