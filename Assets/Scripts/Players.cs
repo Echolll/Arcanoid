@@ -15,6 +15,8 @@ public abstract class Players : MonoBehaviour
 
     public static event Action <string> _gameOver;
 
+    public static event Action<int> _indexHeart;
+
     private void Awake()
     {
         Debug.Log(_maxHealth);
@@ -42,6 +44,7 @@ public abstract class Players : MonoBehaviour
         }
 
         _maxHealth -= _damage;
+        _indexHeart?.Invoke(_maxHealth);
         Debug.Log($"ќсталось м€чей {_maxHealth}");
     }
 

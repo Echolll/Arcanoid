@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -33,6 +34,7 @@ public class ManagerUIinGame : MonoBehaviour
     private void OnEnable()
     {
          _input.Enable();
+         Players._indexHeart += DestroyHeart;
          _input.Moving.PauseGame.performed += callBackContext => PauseGame();
          _resumeGame.onClick.AddListener(ResumeGame);
          _restartGame.onClick.AddListener(RestartGame);
@@ -42,16 +44,38 @@ public class ManagerUIinGame : MonoBehaviour
     private void OnDisable()
     {
          _input.Disable();
+         Players._indexHeart -= DestroyHeart;
          _resumeGame.onClick.RemoveListener(ResumeGame);
          _restartGame.onClick.RemoveListener(RestartGame);
          _exitGame.onClick.RemoveListener(ExitGame);
     }
 
+    private void DestroyHeart(int index)
+    {
+        GameObject firstObj = _playerOneHealth[index].gameObject;
+        GameObject secondObj = _playerTwoHealth[index].gameObject;
+
+        _playerOneHealth.RemoveAt(index);
+        _playerTwoHealth.RemoveAt(index);
+
+        Destroy(firstObj);
+        Destroy(secondObj);
+    }
+
     private void PauseGame()
     {
-        Time.timeScale = 0f;
-        _menuPlayerOne.SetActive(true);
-        _menuPlayerTwo.SetActive(true);
+        if (!_inPause)
+        {
+            _inPause = true;
+            Time.timeScale = 0f;
+            _menuPlayerOne.SetActive(true);
+            _menuPlayerTwo.SetActive(true);
+        }
+        else if (_inPause)
+        {
+            _inPause = false;
+            ResumeGame();
+        }
     }
 
     private void ResumeGame()
